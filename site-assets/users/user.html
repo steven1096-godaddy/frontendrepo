@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <title>User Detail</title>
+    <!-- Include Vue.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="../styles.css" />
+
+</head>
+<body>
+    <h1>User Detail:</h1>
+    <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li>|</li>
+        <li><a href="../about.html">About Us</a></li>
+        <li>|</li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li>|</li>
+        <li id="current"><a href="./index.html">Users</a></li>
+    </ul>
+      
+    <div id="app" class="container">
+        <div v-if="loading" class="loading-spinner">
+            <i class="fas fa-spinner fa-spin" v-if="loading"></i>
+        </div>
+
+        <div v-else>
+            <h2>User ID: {{ user_id }}</h2>
+            <hr>
+            <h2>User Info</h2>
+            <p>Name: {{ user_data.name }} </p>
+            <p>Email: {{ user_data.email }}</p>
+            <h2>User Address</h2>
+            <p>Suite: {{ user_data.address.suite }}</p>
+            <p>Street: {{ user_data.address.street }} </p>
+            <p>City: {{ user_data.address.city }}</p>
+            <p>Zipcode: {{ user_data.address.zipcode }} </p>
+            <p>GeoLocation: lat: {{ user_data.address.geo.lat }} - lng: {{ user_data.address.geo.lng }}</p>
+            <h2>Company Info</h2>
+            <p>Company Name: {{ user_data.company.name }} </p>
+            <p>Slogan: {{ user_data.company.catchPhrase }}</p>
+        </div>
+
+    </div>
+    <a href="javascript:history.back()">Go Back</a>
+
+    <div class="footer">
+        <a href="http://localhost">ECS Example</a>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                user_id: '',
+                user_data: {},
+                loading: true
+            },
+            created() {
+
+                let uri = window.location.search.substring(1); 
+                let params = new URLSearchParams(uri);
+
+                this.user_id = params.get("userid")
+                console.log("User ID is: " + this.user_id)
+
+            },
+            mounted() {
+                this.fetchUser(this.user_id)
+            },
+            methods: {
+                set_user_id(){
+                    data => {this.user_id = params.get("userid")}
+                },
+                fetchUser(user_id) {
+                    url = 'http://localhost:3000/api/v1/users/' + this.user_id
+                    console.log("URL: " + url)
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.user_data = data;
+                        })
+                        .then( console.log(this.user_data) )
+                        .then( data => {this.loading = false})
+                        .catch(error => console.error('Error:', error));
+                }
+            }            
+        });
+    </script>
+</body>
+</html>
